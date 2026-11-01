@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# Configuração da Página (Oculta o header padrão do Streamlit para parecer uma App nativa)
+# Configuração da Página
 st.set_page_config(
     page_title="Consultor de Perfumaria Renner",
     page_icon="🛍️",
@@ -9,7 +9,38 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Aplicativo em HTML/CSS Puro com Visual Ultra-Moderno
+# --- SEGURANÇA: SENHA DE ACESSO EXCLUSIVO ---
+SENHA_MESTRE = "renner123"
+
+def check_password():
+    def password_entered():
+        if st.session_state["password"] == SENHA_MESTRE:
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # Tela de Login com Estilo Limpo
+        st.markdown("""
+            <div style='max-width: 360px; margin: 100px auto; text-align: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;'>
+                <h2 style='color: #2C2224; margin-bottom: 8px;'>🛍️ Perfumaria Renner</h2>
+                <p style='color: #666666; font-size: 14px; margin-bottom: 24px;'>Introduza a palavra-passe para aceder ao consultor exclusivo.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        st.text_input("Palavra-passe", type="password", on_change=password_entered, key="password", label_visibility="collapsed", placeholder="Digite a senha aqui...")
+        return False
+    elif not st.session_state["password_correct"]:
+        st.text_input("Palavra-passe", type="password", on_change=password_entered, key="password", label_visibility="collapsed", placeholder="Digite a senha aqui...")
+        st.error("😕 Palavra-passe incorreta. Tente novamente.")
+        return False
+    else:
+        return True
+
+if not check_password():
+    st.stop()
+
+# --- APLICATIVO EM HTML/CSS PURO (APÓS A SENHA) ---
 html_code = """
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -418,7 +449,6 @@ html_code = """
                 alert("Por favor, escreva uma preferência ou ocasião.");
                 return;
             }
-            // Mostra o cartão de resultado com animação suave
             const card = document.getElementById('resultCard');
             card.style.display = "block";
             card.scrollIntoView({ behavior: 'smooth' });
@@ -428,5 +458,5 @@ html_code = """
 </html>
 """
 
-# Renderiza o app moderno na interface do Streamlit ocupando o ecrã inteiro perfeitamente
+# Renderiza a aplicação protegida
 components.html(html_code, height=750, scrolling=True)

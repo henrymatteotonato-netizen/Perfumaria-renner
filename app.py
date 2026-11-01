@@ -1,229 +1,432 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
-# Configuração da Página
+# Configuração da Página (Oculta o header padrão do Streamlit para parecer uma App nativa)
 st.set_page_config(
     page_title="Consultor de Perfumaria Renner",
     page_icon="🛍️",
-    layout="centered"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-# --- ESTILOS VISUAIS (CORRIGIDOS PARA MODO ESCURO E CLARO) ---
-st.markdown("""
+# Aplicativo em HTML/CSS Puro com Visual Ultra-Moderno
+html_code = """
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultor de Perfumaria Renner</title>
     <style>
-    /* Forçar fundo geral claro */
-    .stApp {
-        background-color: #F7F5F2 !important;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    
-    /* Cartão Principal */
-    .main-card {
-        background-color: #FFFFFF !important;
-        padding: 24px;
-        border-radius: 24px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-    }
-    
-    /* Cartão de Exibição do Perfume */
-    .perfume-card {
-        background-color: #FFFFFF !important;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-        border: 1px solid #EAE5E0 !important;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    
-    /* Tags / Pílulas */
-    .pill-tag {
-        background-color: #F4F1EA !important;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        color: #4A2E35 !important;
-        font-weight: 600;
-        display: inline-block;
-        margin: 3px;
-    }
-    
-    /* Caixas de Notas e Argumento */
-    .section-box {
-        background-color: #FAFAFA !important;
-        border: 1px solid #EAE5E0 !important;
-        border-radius: 14px;
-        padding: 12px 16px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-    
-    /* Ajuste para textos dentro das caixas ficarem visíveis */
-    .section-title {
-        font-size: 11px;
-        font-weight: bold;
-        color: #777777 !important;
-        letter-spacing: 1px;
-        display: block;
-        margin-bottom: 4px;
-    }
-    
-    .section-text {
-        margin: 0;
-        font-size: 13px;
-        color: #222222 !important;
-        font-weight: 500;
-    }
+        :root {
+            --primary-color: #4A2E35;
+            --primary-hover: #3b2329;
+            --bg-color: #F7F5F2;
+            --card-bg: #FFFFFF;
+            --text-main: #2C2224;
+            --text-muted: #666666;
+            --border-color: #EAE5E0;
+            --tag-bg: #F4F1EA;
+        }
 
-    /* Botão Principal em Bordeaux */
-    .stButton > button {
-        background-color: #4A2E35 !important;
-        color: #FFFFFF !important;
-        border-radius: 16px !important;
-        padding: 12px 20px !important;
-        font-weight: 600 !important;
-        border: none !important;
-        width: 100%;
-        box-shadow: 0 4px 12px rgba(74, 46, 53, 0.2);
-    }
-    .stButton > button:hover {
-        background-color: #3b2329 !important;
-        color: #FFFFFF !important;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-    /* Caixa de Texto (Inputs) */
-    .stTextArea textarea {
-        background-color: #FFFFFF !important;
-        border-radius: 14px !important;
-        border: 1px solid #DCD6CD !important;
-        padding: 12px !important;
-        color: #111111 !important;
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+        }
 
-    /* Forçar cores de textos globais */
-    h1, h2, h3, h4, h5, h6, span, label, p {
-        color: #2C2224 !important;
-    }
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .header {
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            color: var(--text-main);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        /* Cartão Principal */
+        .main-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            margin-bottom: 20px;
+        }
+
+        /* Seletor de Abas Estilizado */
+        .tabs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+            border-color: var(--primary-color);
+        }
+
+        .tab-btn.active .tab-title, 
+        .tab-btn.active .tab-desc {
+            color: #FFFFFF;
+        }
+
+        .tab-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .tab-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Caixa de Texto */
+        .search-box-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            background-color: #FAFAFA;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 14px;
+            font-size: 14px;
+            color: var(--text-main);
+            resize: none;
+            height: 110px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--primary-color);
+            background-color: #FFFFFF;
+        }
+
+        /* Chips / Sugestões rápidas */
+        .chips-container {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 16px;
+            scrollbar-width: none;
+        }
+        .chips-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            background-color: var(--tag-bg);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        /* Botão de Pesquisa */
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(74, 46, 53, 0.2);
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Resultados - Cartão de Perfume */
+        .perfume-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
+            margin-top: 20px;
+            display: none;
+        }
+
+        .perfume-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .brand-name {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .perfume-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 2px 0;
+        }
+
+        .perfume-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .perfume-meta b {
+            color: var(--primary-color);
+        }
+
+        .match-badge {
+            background-color: var(--primary-color);
+            color: #FFFFFF;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .description-box {
+            background-color: #FDFBF7;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: #555555;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .pill-tag {
+            background-color: var(--tag-bg);
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .note-box {
+            background-color: #FAFAFA;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+        }
+
+        .note-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .note-content {
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .metrics-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-main);
+            background-color: #FAFAFA;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
     </style>
-""", unsafe_allow_html=True)
+</head>
+<body>
 
-# --- SEGURANÇA: SENHA DE ACESSO EXCLUSIVO ---
-SENHA_MESTRE = "renner123"
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Consultor Renner</h1>
+            <p>Selecione o perfil ou ocasião. Encontramos a ficha técnica exata no catálogo com indicação de género.</p>
+        </div>
 
-def check_password():
-    def password_entered():
-        if st.session_state["password"] == SENHA_MESTRE:
-            st.session_state["password_correct"] = True
-            del st.session_state["password"]
-        else:
-            st.session_state["password_correct"] = False
+        <div class="main-card">
+            <!-- Abas -->
+            <div class="tabs-grid">
+                <button class="tab-btn active" id="tabPreferencias" onclick="switchTab('pref')">
+                    <div class="tab-title">❤️ Preferências</div>
+                    <div class="tab-desc">O que ele já usa e ama</div>
+                </button>
+                <button class="tab-btn" id="tabOcasiao" onclick="switchTab('ocas')">
+                    <div class="tab-title">☀️ Ocasião</div>
+                    <div class="tab-desc">Quando e onde usar</div>
+                </button>
+            </div>
 
-    if "password_correct" not in st.session_state:
-        st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
-        st.text_input("Insira a palavra-passe de acesso:", type="password", on_change=password_entered, key="password")
-        return False
-    elif not st.session_state["password_correct"]:
-        st.text_input("Insira a palavra-passe de acesso:", type="password", on_change=password_entered, key="password")
-        st.error("😕 Senha incorreta")
-        return False
-    else:
-        return True
+            <!-- Caixa de Texto -->
+            <div class="search-box-container">
+                <textarea id="userInput" placeholder="Ex: O cliente adora o Legend da Montblanc ou procura um amadeirado marcante..."></textarea>
+            </div>
 
-if not check_password():
-    st.stop()
+            <!-- Sugestões Rápidas (Chips) -->
+            <div class="chips-container">
+                <button class="chip" onclick="selectChip('Gosta de doces gourmand')">Doces gourmand</button>
+                <button class="chip" onclick="selectChip('Usa florais marcantes')">Florais marcantes</button>
+                <button class="chip" onclick="selectChip('Procura amadeirado noturno')">Amadeirado noturno</button>
+                <button class="chip" onclick="selectChip('Fresco cítrico para o dia')">Fresco cítrico</button>
+            </div>
 
-# --- APLICATIVO PRINCIPAL ---
-st.markdown("### 🛍️ Consultor de Perfumaria Renner")
-st.markdown("<p style='font-size: 14px; margin-top: -10px;'>Descreva o que o cliente usa ou a ocasião desejada. Ficha técnica exata com base no catálogo Renner.</p>", unsafe_allow_html=True)
+            <!-- Botão de Ação -->
+            <button class="submit-btn" onclick="searchPerfume()">🔍 Encontrar fragrâncias</button>
+        </div>
 
-st.markdown('<div class="main-card">', unsafe_allow_html=True)
-
-# Seleção de Modo
-modo = st.radio(
-    "Modo de consulta:",
-    ["❤️ Preferências do cliente (O que ele já usa e ama)", "☀️ Ocasião e família (Quando, onde e como usar)"],
-    label_visibility="collapsed"
-)
-
-st.markdown("<br>", unsafe_allow_html=True)
-placeholder_txt = "Ex: O cliente adora o Legend da Montblanc ou procura algo amadeirado..." if "Preferências" in modo else "Ex: Perfume fresco para o dia a dia no verão..."
-
-query_input = st.text_area("Explorer", placeholder=placeholder_txt, height=120, label_visibility="collapsed")
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-# Filtros
-col1, col2, col3 = st.columns(3)
-with col1:
-    filtro_genero = st.selectbox("Público", ["Todos", "Masculino", "Feminino", "Compartilhável"])
-with col2:
-    filtro_estacao = st.selectbox("Estação", ["Todas", "Verão", "Inverno", "Versátil"])
-with col3:
-    filtro_ocasiao = st.selectbox("Ocasião", ["Todas", "Trabalho", "Dia a dia", "Noite"])
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-if st.button("🔍 Encontrar fragrâncias"):
-    if not query_input.strip():
-        st.warning("Por favor, escreva uma preferência ou ocasião.")
-    else:
-        with st.spinner("A analisar o catálogo Renner..."):
-            
-            # --- CARTÃO DE RESULTADO COM CORES FORÇADAS E VISÍVEIS ---
-            st.markdown("""
-                <div class="perfume-card">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                            <span style="font-size: 11px; font-weight: bold; color: #777777 !important; letter-spacing: 1px;">MONTBLANC</span>
-                            <h2 style="margin: 0; color: #2C2224 !important; font-size: 24px;">Legend</h2>
-                            <p style="margin: 2px 0 0 0; font-size: 13px; color: #555555 !important;">Eau de Toilette · Aromático Fougére · <b style="color: #4A2E35 !important;">Masculino</b></p>
-                        </div>
-                        <div style="background-color: #4A2E35; color: #FFFFFF !important; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 14px;">
-                            78% Match
-                        </div>
-                    </div>
-                    
-                    <div class="section-box" style="margin-top: 15px; background-color: #FDFBF7 !important;">
-                        <p class="section-text">
-                            Reúne notas de bergamota e lavanda com um fundo amadeirado, entregando um resultado equilibrado entre o frescor e a sobriedade.
-                        </p>
-                    </div>
-                    
-                    <div style="margin-top: 12px; margin-bottom: 12px;">
-                        <span class="pill-tag">Versátil</span>
-                        <span class="pill-tag">Trabalho</span>
-                        <span class="pill-tag">Dia a dia</span>
-                        <span class="pill-tag">Eventos noturnos</span>
-                        <span class="pill-tag">Dia e noite</span>
-                    </div>
-                    
-                    <div class="section-box">
-                        <span class="section-title">SAÍDA</span>
-                        <p class="section-text">Bergamota · Lavanda · Abacaxi</p>
-                    </div>
-                    
-                    <div class="section-box">
-                        <span class="section-title">CORAÇÃO</span>
-                        <p class="section-text">Gerânio · Maçã · Rosa</p>
-                    </div>
-                    
-                    <div class="section-box">
-                        <span class="section-title">FUNDO</span>
-                        <p class="section-text">Fava tonka · Sândalo · Baunilha</p>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; color: #444444 !important;">
-                        <div><b style="color: #2C2224 !important;">PROJEÇÃO:</b> Moderada</div>
-                        <div><b style="color: #2C2224 !important;">FIXAÇÃO:</b> Alta</div>
-                    </div>
-                    
-                    <div class="section-box" style="margin-top: 15px; background-color: #FDFBF7 !important;">
-                        <span class="section-title">ARGUMENTO DE VENDA</span>
-                        <p class="section-text">
-                            Bergamota com lavanda e fava tonka: aromático elegante e equilibrado, um dos masculinos de melhor aceitação na Renner.
-                        </p>
-                    </div>
+        <!-- Cartão de Resultado Exato -->
+        <div class="perfume-card" id="resultCard">
+            <div class="perfume-header">
+                <div>
+                    <span class="brand-name">MONTBLANC</span>
+                    <h2 class="perfume-name">Legend</h2>
+                    <div class="perfume-meta">Eau de Toilette · Aromático Fougére · <b>Masculino</b></div>
                 </div>
-            """, unsafe_allow_html=True)
+                <div class="match-badge">78% Match</div>
+            </div>
 
-st.markdown('</div>', unsafe_allow_html=True)
+            <div class="description-box">
+                Reúne notas de bergamota e lavanda com um fundo amadeirado, entregando um resultado equilibrado entre o frescor e a sobriedade.
+            </div>
+
+            <div class="tags-row">
+                <span class="pill-tag">Versátil</span>
+                <span class="pill-tag">Trabalho</span>
+                <span class="pill-tag">Dia a dia</span>
+                <span class="pill-tag">Eventos noturnos</span>
+            </div>
+
+            <div class="note-box">
+                <span class="note-title">SAÍDA</span>
+                <div class="note-content">Bergamota · Lavanda · Abacaxi</div>
+            </div>
+
+            <div class="note-box">
+                <span class="note-title">CORAÇÃO</span>
+                <div class="note-content">Gerânio · Maçã · Rosa</div>
+            </div>
+
+            <div class="note-box">
+                <span class="note-title">FUNDO</span>
+                <div class="note-content">Fava tonka · Sândalo · Baunilha</div>
+            </div>
+
+            <div class="metrics-row">
+                <div><b>PROJEÇÃO:</b> Moderada</div>
+                <div><b>FIXAÇÃO:</b> Alta</div>
+            </div>
+
+            <div class="description-box" style="margin-top: 10px; background-color: #FDFBF7;">
+                <span class="note-title">ARGUMENTO DE VENDA</span>
+                <div style="font-size: 13px; color: var(--text-main); margin-top: 2px;">
+                    Bergamota com lavanda e fava tonka: aromático elegante e equilibrado, um dos masculinos de melhor aceitação na Renner.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(type) {
+            const btnPref = document.getElementById('tabPreferencias');
+            const btnOcas = document.getElementById('tabOcasiao');
+            const input = document.getElementById('userInput');
+
+            if (type === 'pref') {
+                btnPref.classList.add('active');
+                btnOcas.classList.remove('active');
+                input.placeholder = "Ex: O cliente adora o Legend da Montblanc ou procura um amadeirado marcante...";
+            } else {
+                btnOcas.classList.add('active');
+                btnPref.classList.remove('active');
+                input.placeholder = "Ex: Perfume fresco para o dia a dia no verão ou jantar romântico...";
+            }
+        }
+
+        function selectChip(text) {
+            document.getElementById('userInput').value = text;
+        }
+
+        function searchPerfume() {
+            const inputVal = document.getElementById('userInput').value.trim();
+            if (inputVal === "") {
+                alert("Por favor, escreva uma preferência ou ocasião.");
+                return;
+            }
+            // Mostra o cartão de resultado com animação suave
+            const card = document.getElementById('resultCard');
+            card.style.display = "block";
+            card.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+"""
+
+# Renderiza o app moderno na interface do Streamlit ocupando o ecrã inteiro perfeitamente
+components.html(html_code, height=750, scrolling=True)

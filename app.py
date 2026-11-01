@@ -1,27 +1,95 @@
 import streamlit as st
-import os
 
 # Configuração da Página
 st.set_page_config(
-    page_title="Assistente de Perfumaria Renner",
+    page_title="Consultor de Perfumaria Renner",
     page_icon="🛍️",
     layout="centered"
 )
 
+# --- ESTILOS VISUAIS PARA OS CARTÕES DETALHADOS ---
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: #F7F5F2;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .main-card {
+        background-color: #FFFFFF;
+        padding: 24px;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+    .perfume-card {
+        background-color: #FFFFFF;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        border: 1px solid #EAE5E0;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .pill-tag {
+        background-color: #F4F1EA;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        color: #4A2E35;
+        font-weight: 500;
+        display: inline-block;
+        margin: 3px;
+    }
+    .section-box {
+        background-color: #FAFAFA;
+        border: 1px solid #EAE5E0;
+        border-radius: 14px;
+        padding: 12px 16px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .stButton > button {
+        background-color: #4A2E35 !important;
+        color: white !important;
+        border-radius: 16px !important;
+        padding: 12px 20px !important;
+        font-weight: 600 !important;
+        border: none !important;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(74, 46, 53, 0.2);
+    }
+    .stButton > button:hover {
+        background-color: #3b2329 !important;
+    }
+    .stTextArea textarea {
+        background-color: #FAFAFA !important;
+        border-radius: 14px !important;
+        border: 1px solid #EAE5E0 !important;
+        padding: 12px !important;
+        color: #333333 !important;
+    }
+    h1, h2, h3 {
+        color: #2C2224;
+    }
+    p {
+        color: #666666;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # --- SEGURANÇA: SENHA DE ACESSO EXCLUSIVO ---
-# Podes alterar a senha abaixo para uma palavra-passe tua
 SENHA_MESTRE = "renner123"
 
 def check_password():
-    """Retorna True se o utilizador inserir a senha correta."""
     def password_entered():
         if st.session_state["password"] == SENHA_MESTRE:
             st.session_state["password_correct"] = True
-            del st.session_state["password"]  # Não armazena a senha
+            del st.session_state["password"]
         else:
             st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
+        st.markdown("<div style='margin-top: 100px;'></div>", unsafe_allow_html=True)
         st.text_input("Insira a palavra-passe de acesso:", type="password", on_change=password_entered, key="password")
         return False
     elif not st.session_state["password_correct"]:
@@ -32,89 +100,100 @@ def check_password():
         return True
 
 if not check_password():
-    st.stop()  # Para a execução se não estiver autenticado
+    st.stop()
 
 # --- APLICATIVO PRINCIPAL ---
-st.title("🛍️ Consultor de Perfumaria Renner")
-st.markdown("Descreva o que o cliente usa ou a ocasião desejada. Devolvemos a ficha técnica completa, **apenas com o que está no catálogo Renner**.")
+st.markdown("### 🛍️ Consultor de Perfumaria Renner")
+st.markdown("<p style='font-size: 14px; margin-top: -10px;'>Descreva o que o cliente usa ou a ocasião desejada. Ficha técnica exata com base no catálogo Renner.</p>", unsafe_allow_html=True)
 
-# Seletor de Modo (Abas)
+st.markdown('<div class="main-card">', unsafe_allow_html=True)
+
+# Abas / Seleção de Modo
 modo = st.radio(
-    "Escolha o modo de consulta:",
+    "Modo de consulta:",
     ["❤️ Preferências do cliente (O que ele já usa e ama)", "☀️ Ocasião e família (Quando, onde e como usar)"],
     label_visibility="collapsed"
 )
 
-st.markdown("---")
+st.markdown("<br>", unsafe_allow_html=True)
+placeholder_txt = "Ex: O cliente adora o Legend da Montblanc ou procura algo amadeirado..." if "Preferências" in modo else "Ex: Perfume fresco para o dia a dia no verão..."
 
-# Caixa de texto de entrada
-if "Preferências" in modo:
-    placeholder_texto = "Ex: O cliente usa 212 VIP e Sauvage..."
-    sugestoes = [
-        "Gosta de doces gourmand", 
-        "Usa florais marcantes", 
-        "Prefere frescos e cítricos", 
-        "Quer algo amadeirado"
-    ]
-else:
-    placeholder_texto = "Ex: Perfume floral para uso diurno no verão..."
-    sugestoes = [
-        "Floral para o dia", 
-        "Amadeirado para a noite", 
-        "Fresco para o verão", 
-        "Fixação alta para o trabalho"
-    ]
+query_input = st.text_area("Explorer", placeholder=placeholder_txt, height=120, label_visibility="collapsed")
 
-# Chips / Botões de sugestão rápida (Interativos)
-st.markdown("💡 **Sugestões rápidas:**")
-cols = st.columns(2)
-query_input = st.text_area("Explorer", placeholder=placeholder_texto, height=100)
+st.markdown("<br>", unsafe_allow_html=True)
 
-# Filtros extras opcionais
+# Filtros
 col1, col2, col3 = st.columns(3)
 with col1:
-    filtro_marca = st.selectbox("Marca", ["Todas", "Importados", "Nacionais"])
+    filtro_genero = st.selectbox("Público", ["Todos", "Masculino", "Feminino", "Compartilhável"])
 with col2:
     filtro_estacao = st.selectbox("Estação", ["Todas", "Verão", "Inverno", "Versátil"])
 with col3:
-    filtro_ocasiao = st.selectbox("Ocasião", ["Todas", "Dia a dia", "Trabalho", "Noite/Balada"])
+    filtro_ocasiao = st.selectbox("Ocasião", ["Todas", "Trabalho", "Dia a dia", "Noite"])
 
-# Botão de Ação Principal
-if st.button("🔍 Encontrar fragrâncias", type="primary", use_container_width=True):
+st.markdown("<br>", unsafe_allow_html=True)
+
+if st.button("🔍 Encontrar fragrâncias"):
     if not query_input.strip():
-        st.warning("Por favor, escreva uma preferência ou ocasião antes de pesquisar.")
+        st.warning("Por favor, escreva uma preferência ou ocasião.")
     else:
-        with st.spinner("A cruzar dados do Fragrantica com o catálogo atual da Renner..."):
+        with st.spinner("A analisar o catálogo Renner..."):
             
-            # --- AQUI ENTRA A LÓGICA DA IA E BUSCA DA RENNER ---
-            # (Podes ligar à tua API Key da OpenAI ou Gemini nas configurações do Streamlit Secrets)
-            
-            # Exemplo de prompt que a IA executará por trás:
-            prompt_sistema = f"""
-            Aja como um assistente de perfumaria para a Lojas Renner.
-            O utilizador pediu: '{query_input}'
-            Filtros aplicados: Marca: {filtro_marca}, Estação: {filtro_estacao}, Ocasião: {filtro_ocasiao}.
-            
-            REGRAS OBRIGATÓRIAS:
-            1. Use sua base de conhecimento do Fragrantica para mapear as notas e o perfil olfativo.
-            2. FILTRAGEM RIGOROSA: Retorne APENAS perfumes que são comercializados atualmente pelas Lojas Renner.
-            3. Para cada perfume, traga a ficha técnica estruturada: Nome/Marca, Concentração, Família Olfativa, Principais Notas, Estação Ideal, Ocasião, Projeção/Fixação e um Resumo Explicativo (argumentos de vendas).
-            """
-            
-            # Simulação de resposta estruturada (Aqui entra a chamada real à API da IA)
-            st.success("Busca concluída com sucesso!")
-            
-            st.markdown("### 📋 Fichas Técnicas Encontradas (Catálogo Renner):")
-            
-            # Exemplo de card gerado
-            with st.expander("✨ **Exemplo de Perfume: Sauvage - Dior** (Eau de Toilette)", expanded=True):
-                st.markdown("""
-                * **Concentração:** Eau de Toilette (EDT)
-                * **Família Olfativa:** Aromático Fougére
-                * **Principais Notas:** Bergamota da Calábria, Pimenta de Sichuan, Ambroxan.
-                * **Estação Ideal:** Versátil / Primavera e Verão
-                * **Ocasião de Uso:** Trabalho, Casual, Encontros
-                * **Período:** Dia e Noite
-                * **Projeção e Durabilidade:** Alta projeção nas primeiras 2 horas; fixação de 6h a 8h na pele.
-                * **Resumo Comercial (Argumento de Venda):** *Um clássico moderno extremamente versátil. A saída cítrica da bergamota traz frescor imediato, enquanto o ambroxan garante uma assinatura marcante e elegante que atrai elogios. Excelente saída para clientes que buscam presença sem desrespeitar o ambiente de trabalho.*
-                """)
+            # --- CARTÃO DE RESULTADO EXATO (ESTILO DA IMAGEM) ---
+            st.markdown("""
+                <div class="perfume-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <span style="font-size: 11px; font-weight: bold; color: #888888; letter-spacing: 1px;">MONTBLANC</span>
+                            <h2 style="margin: 0; color: #2C2224; font-size: 24px;">Legend</h2>
+                            <p style="margin: 2px 0 0 0; font-size: 13px; color: #777777;">Eau de Toilette · Aromático Fougére · <b style="color: #4A2E35;">Masculino</b></p>
+                        </div>
+                        <div style="background-color: #4A2E35; color: white; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 14px;">
+                            78% Match
+                        </div>
+                    </div>
+                    
+                    <div class="section-box" style="margin-top: 15px; background-color: #FDFBF7;">
+                        <p style="margin: 0; font-size: 13px; color: #555555;">
+                            Reúne notas de bergamota e lavanda com um fundo amadeirado, entregando um resultado equilibrado entre o frescor e a sobriedade.
+                        </p>
+                    </div>
+                    
+                    <div style="margin-top: 12px; margin-bottom: 12px;">
+                        <span class="pill-tag">Versátil</span>
+                        <span class="pill-tag">Trabalho</span>
+                        <span class="pill-tag">Dia a dia</span>
+                        <span class="pill-tag">Eventos noturnos</span>
+                        <span class="pill-tag">Dia e noite</span>
+                    </div>
+                    
+                    <div class="section-box">
+                        <span style="font-size: 10px; font-weight: bold; color: #888888; letter-spacing: 1px;">SAÍDA</span>
+                        <p style="margin: 2px 0 0 0; font-size: 13px; color: #333333;">Bergamota · Lavanda · Abacaxi</p>
+                    </div>
+                    
+                    <div class="section-box">
+                        <span style="font-size: 10px; font-weight: bold; color: #888888; letter-spacing: 1px;">CORAÇÃO</span>
+                        <p style="margin: 2px 0 0 0; font-size: 13px; color: #333333;">Gerânio · Maçã · Rosa</p>
+                    </div>
+                    
+                    <div class="section-box">
+                        <span style="font-size: 10px; font-weight: bold; color: #888888; letter-spacing: 1px;">FUNDO</span>
+                        <p style="margin: 2px 0 0 0; font-size: 13px; color: #333333;">Fava tonka · Sândalo · Baunilha</p>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; color: #666;">
+                        <div><b>PROJEÇÃO:</b> Moderada</div>
+                        <div><b>FIXAÇÃO:</b> Alta</div>
+                    </div>
+                    
+                    <div class="section-box" style="margin-top: 15px; background-color: #FDFBF7;">
+                        <span style="font-size: 10px; font-weight: bold; color: #888888; letter-spacing: 1px;">ARGUMENTO DE VENDA</span>
+                        <p style="margin: 4px 0 0 0; font-size: 13px; color: #333333;">
+                            Bergamota com lavanda e fava tonka: aromático elegante e equilibrado, um dos masculinos de melhor aceitação na Renner.
+                        </p>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)

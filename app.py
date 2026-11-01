@@ -7,50 +7,78 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- ESTILOS VISUAIS PARA OS CARTÕES DETALHADOS ---
+# --- ESTILOS VISUAIS (CORRIGIDOS PARA MODO ESCURO E CLARO) ---
 st.markdown("""
     <style>
+    /* Forçar fundo geral claro */
     .stApp {
-        background-color: #F7F5F2;
+        background-color: #F7F5F2 !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
+    
+    /* Cartão Principal */
     .main-card {
-        background-color: #FFFFFF;
+        background-color: #FFFFFF !important;
         padding: 24px;
         border-radius: 24px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         margin-bottom: 20px;
     }
+    
+    /* Cartão de Exibição do Perfume */
     .perfume-card {
-        background-color: #FFFFFF;
+        background-color: #FFFFFF !important;
         padding: 20px;
         border-radius: 20px;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-        border: 1px solid #EAE5E0;
+        border: 1px solid #EAE5E0 !important;
         margin-top: 20px;
         margin-bottom: 20px;
     }
+    
+    /* Tags / Pílulas */
     .pill-tag {
-        background-color: #F4F1EA;
+        background-color: #F4F1EA !important;
         padding: 6px 14px;
         border-radius: 20px;
         font-size: 13px;
-        color: #4A2E35;
-        font-weight: 500;
+        color: #4A2E35 !important;
+        font-weight: 600;
         display: inline-block;
         margin: 3px;
     }
+    
+    /* Caixas de Notas e Argumento */
     .section-box {
-        background-color: #FAFAFA;
-        border: 1px solid #EAE5E0;
+        background-color: #FAFAFA !important;
+        border: 1px solid #EAE5E0 !important;
         border-radius: 14px;
         padding: 12px 16px;
         margin-top: 10px;
         margin-bottom: 10px;
     }
+    
+    /* Ajuste para textos dentro das caixas ficarem visíveis */
+    .section-title {
+        font-size: 11px;
+        font-weight: bold;
+        color: #777777 !important;
+        letter-spacing: 1px;
+        display: block;
+        margin-bottom: 4px;
+    }
+    
+    .section-text {
+        margin: 0;
+        font-size: 13px;
+        color: #222222 !important;
+        font-weight: 500;
+    }
+
+    /* Botão Principal em Bordeaux */
     .stButton > button {
         background-color: #4A2E35 !important;
-        color: white !important;
+        color: #FFFFFF !important;
         border-radius: 16px !important;
         padding: 12px 20px !important;
         font-weight: 600 !important;
@@ -60,19 +88,21 @@ st.markdown("""
     }
     .stButton > button:hover {
         background-color: #3b2329 !important;
+        color: #FFFFFF !important;
     }
+
+    /* Caixa de Texto (Inputs) */
     .stTextArea textarea {
-        background-color: #FAFAFA !important;
+        background-color: #FFFFFF !important;
         border-radius: 14px !important;
-        border: 1px solid #EAE5E0 !important;
+        border: 1px solid #DCD6CD !important;
         padding: 12px !important;
-        color: #333333 !important;
+        color: #111111 !important;
     }
-    h1, h2, h3 {
-        color: #2C2224;
-    }
-    p {
-        color: #666666;
+
+    /* Forçar cores de textos globais */
+    h1, h2, h3, h4, h5, h6, span, label, p {
+        color: #2C2224 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -108,7 +138,7 @@ st.markdown("<p style='font-size: 14px; margin-top: -10px;'>Descreva o que o cli
 
 st.markdown('<div class="main-card">', unsafe_allow_html=True)
 
-# Abas / Seleção de Modo
+# Seleção de Modo
 modo = st.radio(
     "Modo de consulta:",
     ["❤️ Preferências do cliente (O que ele já usa e ama)", "☀️ Ocasião e família (Quando, onde e como usar)"],
@@ -139,22 +169,22 @@ if st.button("🔍 Encontrar fragrâncias"):
     else:
         with st.spinner("A analisar o catálogo Renner..."):
             
-            # --- CARTÃO DE RESULTADO EXATO (ESTILO DA IMAGEM) ---
+            # --- CARTÃO DE RESULTADO COM CORES FORÇADAS E VISÍVEIS ---
             st.markdown("""
                 <div class="perfume-card">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
-                            <span style="font-size: 11px; font-weight: bold; color: #888888; letter-spacing: 1px;">MONTBLANC</span>
-                            <h2 style="margin: 0; color: #2C2224; font-size: 24px;">Legend</h2>
-                            <p style="margin: 2px 0 0 0; font-size: 13px; color: #777777;">Eau de Toilette · Aromático Fougére · <b style="color: #4A2E35;">Masculino</b></p>
+                            <span style="font-size: 11px; font-weight: bold; color: #777777 !important; letter-spacing: 1px;">MONTBLANC</span>
+                            <h2 style="margin: 0; color: #2C2224 !important; font-size: 24px;">Legend</h2>
+                            <p style="margin: 2px 0 0 0; font-size: 13px; color: #555555 !important;">Eau de Toilette · Aromático Fougére · <b style="color: #4A2E35 !important;">Masculino</b></p>
                         </div>
-                        <div style="background-color: #4A2E35; color: white; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 14px;">
+                        <div style="background-color: #4A2E35; color: #FFFFFF !important; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 14px;">
                             78% Match
                         </div>
                     </div>
                     
-                    <div class="section-box" style="margin-top: 15px; background-color: #FDFBF7;">
-                        <p style="margin: 0; font-size: 13px; color: #555555;">
+                    <div class="section-box" style="margin-top: 15px; background-color: #FDFBF7 !important;">
+                        <p class="section-text">
                             Reúne notas de bergamota e lavanda com um fundo amadeirado, entregando um resultado equilibrado entre o frescor e a sobriedade.
                         </p>
                     </div>
@@ -168,28 +198,28 @@ if st.button("🔍 Encontrar fragrâncias"):
                     </div>
                     
                     <div class="section-box">
-                        <span style="font-size: 10px; font-weight: bold; color: #888888; letter-spacing: 1px;">SAÍDA</span>
-                        <p style="margin: 2px 0 0 0; font-size: 13px; color: #333333;">Bergamota · Lavanda · Abacaxi</p>
+                        <span class="section-title">SAÍDA</span>
+                        <p class="section-text">Bergamota · Lavanda · Abacaxi</p>
                     </div>
                     
                     <div class="section-box">
-                        <span style="font-size: 10px; font-weight: bold; color: #888888; letter-spacing: 1px;">CORAÇÃO</span>
-                        <p style="margin: 2px 0 0 0; font-size: 13px; color: #333333;">Gerânio · Maçã · Rosa</p>
+                        <span class="section-title">CORAÇÃO</span>
+                        <p class="section-text">Gerânio · Maçã · Rosa</p>
                     </div>
                     
                     <div class="section-box">
-                        <span style="font-size: 10px; font-weight: bold; color: #888888; letter-spacing: 1px;">FUNDO</span>
-                        <p style="margin: 2px 0 0 0; font-size: 13px; color: #333333;">Fava tonka · Sândalo · Baunilha</p>
+                        <span class="section-title">FUNDO</span>
+                        <p class="section-text">Fava tonka · Sândalo · Baunilha</p>
                     </div>
                     
-                    <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; color: #666;">
-                        <div><b>PROJEÇÃO:</b> Moderada</div>
-                        <div><b>FIXAÇÃO:</b> Alta</div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px; color: #444444 !important;">
+                        <div><b style="color: #2C2224 !important;">PROJEÇÃO:</b> Moderada</div>
+                        <div><b style="color: #2C2224 !important;">FIXAÇÃO:</b> Alta</div>
                     </div>
                     
-                    <div class="section-box" style="margin-top: 15px; background-color: #FDFBF7;">
-                        <span style="font-size: 10px; font-weight: bold; color: #888888; letter-spacing: 1px;">ARGUMENTO DE VENDA</span>
-                        <p style="margin: 4px 0 0 0; font-size: 13px; color: #333333;">
+                    <div class="section-box" style="margin-top: 15px; background-color: #FDFBF7 !important;">
+                        <span class="section-title">ARGUMENTO DE VENDA</span>
+                        <p class="section-text">
                             Bergamota com lavanda e fava tonka: aromático elegante e equilibrado, um dos masculinos de melhor aceitação na Renner.
                         </p>
                     </div>

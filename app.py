@@ -7,135 +7,12 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- ESTILOS VISUAIS IDÊNTICOS À REFERÊNCIA ---
+# --- ESTILOS VISUAIS NATIVOS E LIMPOS ---
 st.markdown("""
     <style>
     .stApp {
         background-color: #F7F5F2 !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .main-card {
-        background-color: #FFFFFF !important;
-        padding: 24px;
-        border-radius: 24px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-    }
-    .perfume-result-card {
-        background-color: #FFFFFF !important;
-        padding: 24px;
-        border-radius: 24px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        border: 1px solid #EAE5E0 !important;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    .perfume-top-flex {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        margin-bottom: 16px;
-    }
-    .letter-box {
-        width: 48px;
-        height: 48px;
-        background-color: #F7F5F2;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-        font-weight: 700;
-        color: #2C2224;
-        margin-right: 14px;
-        flex-shrink: 0;
-        border: 1px solid #EAE5E0;
-    }
-    .match-badge {
-        background-color: #4A2E35;
-        color: #FFFFFF !important;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-weight: 700;
-        font-size: 13px;
-        letter-spacing: 0.5px;
-    }
-    .pill-tag {
-        background-color: #F7F5F2 !important;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        color: #4A2E35 !important;
-        font-weight: 600;
-        display: inline-block;
-        margin: 3px;
-        border: 1px solid #EAE5E0;
-    }
-    .box-bloco {
-        background-color: #FDFBF7 !important;
-        border: 1px solid #EAE5E0 !important;
-        border-radius: 16px;
-        padding: 14px 16px;
-        margin-top: 12px;
-        margin-bottom: 12px;
-    }
-    .box-nota {
-        background-color: #FAFAFA !important;
-        border: 1px solid #EAE5E0 !important;
-        border-radius: 16px;
-        padding: 12px 16px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-    .titulo-etiqueta {
-        font-size: 10px;
-        font-weight: 800;
-        color: #888888 !important;
-        letter-spacing: 1.2px;
-        display: block;
-        margin-bottom: 4px;
-    }
-    .texto-conteudo {
-        margin: 0;
-        font-size: 13px;
-        color: #2C2224 !important;
-        font-weight: 500;
-        line-height: 1.4;
-    }
-    .metrics-container {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 16px;
-        margin-bottom: 16px;
-        background-color: #FAFAFA;
-        padding: 12px 16px;
-        border-radius: 16px;
-        border: 1px solid #EAE5E0;
-    }
-    .metric-group {
-        width: 48%;
-    }
-    .metric-header {
-        display: flex;
-        justify-content: space-between;
-        font-size: 11px;
-        font-weight: 800;
-        color: #777777;
-        margin-bottom: 6px;
-        letter-spacing: 0.5px;
-    }
-    .bars-row {
-        display: flex;
-        gap: 4px;
-    }
-    .bar {
-        flex: 1;
-        height: 6px;
-        border-radius: 3px;
-        background-color: #E2DBD4;
-    }
-    .bar.active {
-        background-color: #4A2E35;
     }
     .stButton > button {
         background-color: #4A2E35 !important;
@@ -185,7 +62,7 @@ def check_password():
 if not check_password():
     st.stop()
 
-# --- BASE DE DADOS COMPLETA (NOTAS OFICIAIS DO FRAGRANTICA + CATÁLOGO RENNER) ---
+# --- BASE DE DADOS: FRAGRANTICA + CATÁLOGO RENNER ---
 CATALOGO_RENNER = [
     {
         "letra": "L",
@@ -199,10 +76,8 @@ CATALOGO_RENNER = [
         "saida": "Limão Siciliano · Maçã · Cedro · Campanula",
         "coracao": "Bambu · Jasmim · Rosa Branca",
         "fundo": "Madeira de Citrinos · Âmbar · Almíscar",
-        "proj_val": "Moderada",
-        "proj_bars": 3,
-        "fix_val": "Moderada",
-        "fix_bars": 3,
+        "proj": "Moderada (███░)",
+        "fix": "Moderada (███░)",
         "argumento": "O topo de vendas em frescor na Renner. Saída cítrica radiante com fundo almiscarado de alta aceitação no calor brasileiro."
     },
     {
@@ -213,14 +88,12 @@ CATALOGO_RENNER = [
         "genero": "Masculino",
         "match": "94%",
         "resumo": "Reúne notas de bergamota e lavanda com um fundo amadeirado, entregando um resultado equilibrado entre o frescor e a sobriedade.",
-        "tags": ["Versátil", "Trabalho", "Dia a dia", "Eventos noturnos", "Dia e noite"],
+        "tags": ["Versátil", "Trabalho", "Dia a dia", "Eventos noturnos"],
         "saida": "Bergamota · Lavanda · Abacaxi · Verbena",
         "coracao": "Gerânio · Maçã · Musgo de Carvalho · Rosa",
         "fundo": "Fava Tonka · Sândalo",
-        "proj_val": "Moderada",
-        "proj_bars": 3,
-        "fix_val": "Alta",
-        "fix_bars": 4,
+        "proj": "Moderada (███░)",
+        "fix": "Alta (████)",
         "argumento": "Bergamota com lavanda e fava tonka: aromático elegante e equilibrado, um dos masculinos de melhor aceitação na Renner."
     },
     {
@@ -233,12 +106,10 @@ CATALOGO_RENNER = [
         "resumo": "Uma dualidade marcante mapeada no Fragrantica pelas notas ricas de tuberosa, fava tonka e café tostado.",
         "tags": ["Noite", "Festas", "Inverno", "Marcante", "Sensual"],
         "saida": "Amêndoa · Café · Bergamota · Limão",
-        "coracao": "Tuberosa · Jasmim Sambac · Flor de Laranjeira · Orris",
+        "coracao": "Tuberosa · Jasmim Sambac · Flor de Laranjeira",
         "fundo": "Fava Tonka · Cacau · Baunilha · Pralinê · Sândalo",
-        "proj_val": "Alta",
-        "proj_bars": 4,
-        "fix_val": "Muito Alta",
-        "fix_bars": 4,
+        "proj": "Alta (████)",
+        "fix": "Muito Alta (████)",
         "argumento": "O famoso perfume do salto alto. Doce sofisticado e envolvente, perfeito para impulsionar vendas no segmento noturno da Renner."
     },
     {
@@ -249,46 +120,24 @@ CATALOGO_RENNER = [
         "genero": "Masculino",
         "match": "99%",
         "resumo": "Criado com uma explosão de frescor pimenta-bergamota amparada pelo rastro inconfundível do ambroxan.",
-        "tags": ["Versátil", "Noite", "Dia a dia", "Poderoso", "Assinatura"],
+        "tags": ["Versátil", "Noite", "Dia a dia", "Poderoso"],
         "saida": "Pimenta de Sichuan · Bergamota da Calábria",
-        "coracao": "Gerânio · Lavanda · Pimenta Rosa · Vetiver · Patchouli",
+        "coracao": "Gerânio · Lavanda · Pimenta Rosa · Vetiver",
         "fundo": "Ambroxan · Cedro · Ládano",
-        "proj_val": "Forte",
-        "proj_bars": 4,
-        "fix_val": "Alta",
-        "fix_bars": 4,
+        "proj": "Forte (████)",
+        "fix": "Alta (████)",
         "argumento": "Um fenômeno mundial de elogios. Extremamente magnético, ideal para clientes que buscam alta performance e projeção marcante."
-    },
-    {
-        "letra": "2",
-        "marca": "CAROLINA HERRERA",
-        "nome": "212 VIP Black",
-        "tipo": "Eau de Parfum · Aromatic Fougere",
-        "genero": "Masculino",
-        "match": "92%",
-        "resumo": "Notas alcoólicas de absinto combinadas com especiarias e um fundo abaunilhado de almíscar negro.",
-        "tags": ["Noite", "Balada", "Inverno", "Ousado", "Marcante"],
-        "saida": "Absinto · Anis · Funcho",
-        "coracao": "Lavanda",
-        "fundo": "Almíscar Negro · Baunilha Negra",
-        "proj_val": "Alta",
-        "proj_bars": 4,
-        "fix_val": "Alta",
-        "fix_bars": 4,
-        "argumento": "A escolha perfeita para baladas e noites frias. Tem excelente saída comercial na perfumaria masculina Renner."
     }
 ]
 
 # --- INTERFACE PRINCIPAL ---
-st.markdown('<div class="main-card">', unsafe_allow_html=True)
-
 st.markdown("### 🛍️ Consultor de Perfumaria Renner")
 st.markdown("<p style='font-size: 13px; color: #666666; margin-top: -5px;'>Informações técnicas oficiais do <b>Fragrantica</b> aplicadas ao stock Renner.</p>", unsafe_allow_html=True)
 
 query_input = st.text_area(
     "Explorer",
     placeholder="Ex: Light Blue, Sauvage, perfume amadeirado noturno ou doce...",
-    height=110,
+    height=100,
     label_visibility="collapsed"
 )
 
@@ -316,77 +165,46 @@ if st.button("🔍 Encontrar fragrâncias"):
             st.markdown(f"#### 📋 Encontradas {len(resultados)} Fichas Técnicas:")
             
             for p in resultados:
-                tags_html = "".join([f'<span class="pill-tag">{t}</span>' for t in p["tags"]])
-                proj_bars_html = "".join([f'<div class="bar {"active" if i < p["proj_bars"] else ""}"></div>' for i in range(4)])
-                fix_bars_html = "".join([f'<div class="bar {"active" if i < p["fix_bars"] else ""}"></div>' for i in range(4)])
-                
-                st.markdown(f"""
-                    <div class="perfume-result-card">
-                        <div class="perfume-top-flex">
-                            <div style="display: flex; align-items: flex-start;">
-                                <div class="letter-box">{p["letra"]}</div>
+                # Usamos containers limpos do Streamlit para evitar que o código HTML apareça como texto
+                with st.container():
+                    st.markdown(f"""
+                    <div style="background-color: #FFFFFF; padding: 20px; border-radius: 20px; border: 1px solid #EAE5E0; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <div style="width: 42px; height: 42px; background: #F7F5F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; border: 1px solid #EAE5E0;">{p["letra"]}</div>
                                 <div>
-                                    <span style="font-size: 10px; font-weight: 800; color: #888888; letter-spacing: 1.2px; display: block;">{p["marca"]}</span>
-                                    <h2 style="margin: 0; color: #2C2224 !important; font-size: 22px; font-weight: 700;">{p["nome"]}</h2>
-                                    <p style="margin: 2px 0 0 0; font-size: 12px; color: #666666 !important;">
-                                        {p["tipo"]} · <b style="color: #4A2E35 !important;">{p["genero"]}</b>
-                                    </p>
+                                    <span style="font-size: 10px; font-weight: 800; color: #888888; letter-spacing: 1px;">{p["marca"]}</span>
+                                    <h3 style="margin: 0; color: #2C2224; font-size: 20px;">{p["nome"]}</h3>
+                                    <p style="margin: 0; font-size: 12px; color: #666666;">{p["tipo"]} · <b style="color: #4A2E35;">{p["genero"]}</b></p>
                                 </div>
                             </div>
-                            <div class="match-badge">
+                            <div style="background: #4A2E35; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">
                                 {p["match"]}
                             </div>
                         </div>
                         
-                        <div class="box-bloco">
-                            <p class="texto-conteudo">{p["resumo"]}</p>
+                        <div style="background: #FDFBF7; padding: 10px 14px; border-radius: 12px; margin-top: 12px; font-size: 13px; color: #444;">
+                            {p["resumo"]}
                         </div>
                         
-                        <div style="margin-top: 10px; margin-bottom: 10px;">
-                            {tags_html}
+                        <div style="margin-top: 10px;">
+                            <b>SAÍDA (Fragrantica):</b> <span style="font-size: 13px; color: #333;">{p["saida"]}</span>
+                        </div>
+                        <div style="margin-top: 4px;">
+                            <b>CORAÇÃO (Fragrantica):</b> <span style="font-size: 13px; color: #333;">{p["coracao"]}</span>
+                        </div>
+                        <div style="margin-top: 4px;">
+                            <b>FUNDO (Fragrantica):</b> <span style="font-size: 13px; color: #333;">{p["fundo"]}</span>
                         </div>
                         
-                        <div class="box-nota">
-                            <span class="titulo-etiqueta">SAÍDA (FRAGRANTICA)</span>
-                            <p class="texto-conteudo">{p["saida"]}</p>
+                        <div style="display: flex; justify-content: space-between; margin-top: 12px; background: #FAFAFA; padding: 8px 12px; border-radius: 10px; font-size: 12px;">
+                            <div><b>PROJEÇÃO:</b> {p["proj"]}</div>
+                            <div><b>FIXAÇÃO:</b> {p["fix"]}</div>
                         </div>
                         
-                        <div class="box-nota">
-                            <span class="titulo-etiqueta">CORAÇÃO (FRAGRANTICA)</span>
-                            <p class="texto-conteudo">{p["coracao"]}</p>
-                        </div>
-                        
-                        <div class="box-nota">
-                            <span class="titulo-etiqueta">FUNDO (FRAGRANTICA)</span>
-                            <p class="texto-conteudo">{p["fundo"]}</p>
-                        </div>
-                        
-                        <div class="metrics-container">
-                            <div class="metric-group">
-                                <div class="metric-header">
-                                    <span>PROJEÇÃO</span>
-                                    <span>{p["proj_val"]}</span>
-                                </div>
-                                <div class="bars-row">
-                                    {proj_bars_html}
-                                </div>
-                            </div>
-                            <div class="metric-group">
-                                <div class="metric-header">
-                                    <span>FIXAÇÃO</span>
-                                    <span>{p["fix_val"]}</span>
-                                </div>
-                                <div class="bars-row">
-                                    {fix_bars_html}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="box-bloco">
-                            <span class="titulo-etiqueta">ARGUMENTO DE VENDA (RENNER)</span>
-                            <p class="texto-conteudo" style="margin-top: 4px;">{p["argumento"]}</p>
+                        <div style="background: #FDFBF7; padding: 10px 14px; border-radius: 12px; margin-top: 10px; font-size: 13px;">
+                            <b style="color: #888888; font-size: 10px; letter-spacing: 1px; display: block; margin-bottom: 2px;">ARGUMENTO DE VENDA (RENNER)</b>
+                            {p["argumento"]}
                         </div>
                     </div>
-                """, unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
+                    """, unsafe_allow_html=True)

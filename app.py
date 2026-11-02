@@ -1,5 +1,4 @@
 import streamlit as st
-import os
 
 # Configuração da Página
 st.set_page_config(
@@ -8,7 +7,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- ESTILOS VISUAIS PARA MODO CLARO E ESCURO ---
+# --- ESTILOS VISUAIS PARA O LAYOUT MODERNO ---
 st.markdown("""
     <style>
     .stApp {
@@ -86,7 +85,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- SENHA DE ACESSO ---
+# --- SEGURANÇA: SENHA DE ACESSO ---
 SENHA_MESTRE = "renner123"
 
 def check_password():
@@ -111,7 +110,7 @@ def check_password():
 if not check_password():
     st.stop()
 
-# --- CATÁLOGO DE PRODUTOS VENDIDOS NA RENNER (BASE DA LOJA + FRAGRANTICA) ---
+# --- BASE DE DADOS (FRAGRANTICA + CATÁLOGO RENNER) ---
 CATALOGO_RENNER = [
     {
         "marca": "DOLCE & GABBANA",
@@ -190,16 +189,16 @@ CATALOGO_RENNER = [
     }
 ]
 
-# --- INTERFACE PRINCIPAL ---
-st.markdown("### 🛍️ Consultor de Perfumaria Renner")
-st.markdown("<p style='font-size: 13px; margin-top: -10px;'>Pesquisa baseada nos dados do <b>Fragrantica</b> filtrados <b>exclusivamente pelo catálogo Renner</b>.</p>", unsafe_allow_html=True)
-
+# --- LAYOUT PRINCIPAL EM CARTÃO LIMPO ---
 st.markdown('<div class="main-card">', unsafe_allow_html=True)
 
+st.markdown("### 🛍️ Consultor de Perfumaria Renner")
+st.markdown("<p style='font-size: 13px; color: #666666;'>Dados do <b>Fragrantica</b> filtrados exclusivamente para o catálogo Renner.</p>", unsafe_allow_html=True)
+
 query_input = st.text_area(
-    "Pesquisa",
-    placeholder="Ex: Light Blue, perfume fresco para verão, floral marcante ou amadeirado...",
-    height=100,
+    "Explorer",
+    placeholder="Ex: Light Blue feminino, perfume amadeirado para o trabalho ou doce noturno...",
+    height=110,
     label_visibility="collapsed"
 )
 
@@ -209,12 +208,10 @@ if st.button("🔍 Encontrar fragrâncias"):
     termo = query_input.strip().lower()
     
     if not termo:
-        st.warning("Por favor, digite o nome de um perfume ou estilo desejado.")
+        st.warning("Por favor, escreva a preferência ou ocasião do cliente.")
     else:
-        with st.spinner("A consultar fichas do Fragrantica no catálogo Renner..."):
+        with st.spinner("A cruzar dados do Fragrantica com o catálogo Renner..."):
             resultados = []
-            
-            # Filtra por correspondência no nome, marca, gênero ou tags olfativas
             for p in CATALOGO_RENNER:
                 if (termo in p["nome"].lower() or 
                     termo in p["marca"].lower() or 
@@ -223,11 +220,10 @@ if st.button("🔍 Encontrar fragrâncias"):
                     termo in p["resumo"].lower()):
                     resultados.append(p)
             
-            # Se a busca for genérica ou não encontrar o nome exato, devolve as principais opções Renner
-            if len(resultados) < 2:
+            if not resultados:
                 resultados = CATALOGO_RENNER[:4]
 
-            st.markdown(f"#### 📋 Encontradas {len(resultados)} Opções no Catálogo Renner:")
+            st.markdown(f"#### 📋 Encontradas {len(resultados)} Opções Compatíveis:")
             
             for p in resultados:
                 tags_html = "".join([f'<span class="pill-tag">{t}</span>' for t in p["tags"]])

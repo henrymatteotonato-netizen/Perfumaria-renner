@@ -1,3 +1,93 @@
+import streamlit as st
+import os
+
+# Configuração da Página
+st.set_page_config(
+    page_title="Consultor de Perfumaria Renner",
+    page_icon="🛍️",
+    layout="centered"
+)
+
+# --- ESTILOS VISUAIS PARA MODO CLARO E ESCURO ---
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: #F7F5F2 !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .main-card {
+        background-color: #FFFFFF !important;
+        padding: 24px;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+    .perfume-card {
+        background-color: #FFFFFF !important;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        border: 1px solid #EAE5E0 !important;
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }
+    .pill-tag {
+        background-color: #F4F1EA !important;
+        padding: 5px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        color: #4A2E35 !important;
+        font-weight: 600;
+        display: inline-block;
+        margin: 2px;
+    }
+    .section-box {
+        background-color: #FAFAFA !important;
+        border: 1px solid #EAE5E0 !important;
+        border-radius: 12px;
+        padding: 10px 14px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+    }
+    .section-title {
+        font-size: 10px;
+        font-weight: bold;
+        color: #777777 !important;
+        letter-spacing: 1px;
+        display: block;
+        margin-bottom: 2px;
+    }
+    .section-text {
+        margin: 0;
+        font-size: 13px;
+        color: #222222 !important;
+        font-weight: 500;
+    }
+    .stButton > button {
+        background-color: #4A2E35 !important;
+        color: #FFFFFF !important;
+        border-radius: 16px !important;
+        padding: 14px 20px !important;
+        font-weight: 600 !important;
+        border: none !important;
+        width: 100%;
+        box-shadow: 0 4px 12px rgba(74, 46, 53, 0.2);
+    }
+    .stTextArea textarea {
+        background-color: #FFFFFF !important;
+        border-radius: 14px !important;
+        border: 1px solid #DCD6CD !important;
+        padding: 12px !important;
+        color: #111111 !important;
+    }
+    h1, h2, h3, h4, h5, h6, span, label, p {
+        color: #2C2224 !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- SENHA DE ACESSO ---
+SENHA_MESTRE = "renner123"
 
 def check_password():
     def password_entered():
@@ -8,18 +98,12 @@ def check_password():
             st.session_state["password_correct"] = False
 
     if "password_correct" not in st.session_state:
-        # Tela de Login com Estilo Limpo
-        st.markdown("""
-            <div style='max-width: 360px; margin: 100px auto; text-align: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;'>
-                <h2 style='color: #2C2224; margin-bottom: 8px;'>🛍️ Perfumaria Renner</h2>
-                <p style='color: #666666; font-size: 14px; margin-bottom: 24px;'>Introduza a palavra-passe para aceder ao consultor exclusivo.</p>
-            </div>
-        """, unsafe_allow_html=True)
-        st.text_input("Palavra-passe", type="password", on_change=password_entered, key="password", label_visibility="collapsed", placeholder="Digite a senha aqui...")
+        st.markdown("<div style='margin-top: 80px;'></div>", unsafe_allow_html=True)
+        st.text_input("Insira a palavra-passe de acesso:", type="password", on_change=password_entered, key="password")
         return False
     elif not st.session_state["password_correct"]:
-        st.text_input("Palavra-passe", type="password", on_change=password_entered, key="password", label_visibility="collapsed", placeholder="Digite a senha aqui...")
-        st.error("😕 Palavra-passe incorreta. Tente novamente.")
+        st.text_input("Insira a palavra-passe de acesso:", type="password", on_change=password_entered, key="password")
+        st.error("😕 Senha incorreta")
         return False
     else:
         return True
@@ -27,423 +111,175 @@ def check_password():
 if not check_password():
     st.stop()
 
-# --- APLICATIVO EM HTML/CSS PURO (APÓS A SENHA) ---
-html_code = """
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultor de Perfumaria Renner</title>
-    <style>
-        :root {
-            --primary-color: #4A2E35;
-            --primary-hover: #3b2329;
-            --bg-color: #F7F5F2;
-            --card-bg: #FFFFFF;
-            --text-main: #2C2224;
-            --text-muted: #666666;
-            --border-color: #EAE5E0;
-            --tag-bg: #F4F1EA;
-        }
+# --- CATÁLOGO DE PRODUTOS VENDIDOS NA RENNER (BASE DA LOJA + FRAGRANTICA) ---
+CATALOGO_RENNER = [
+    {
+        "marca": "DOLCE & GABBANA",
+        "nome": "Light Blue EDT",
+        "tipo": "Eau de Toilette · Floral Frutal · ",
+        "genero": "Feminino",
+        "match": "98%",
+        "resumo": "Inspirado no verão mediterrâneo. Combina notas cítricas de limão siciliano com a leveza da maçã verde e bambu.",
+        "tags": ["Fresco", "Verão", "Dia a dia", "Trabalho", "Casual"],
+        "saida": "Limão Siciliano · Maçã Verde · Cedro · Campanula",
+        "coracao": "Bambu · Jasmim · Rosa Branca",
+        "fundo": "Madeira de Citrinos · Âmbar · Almíscar",
+        "projecao": "Moderada",
+        "fixacao": "Moderada (5h a 7h)",
+        "argumento": "O perfume ícone de frescor. Ideal para clientes que buscam elegância leve em dias quentes. Um dos femininos importados mais vendidos na Renner."
+    },
+    {
+        "marca": "MOSCHINO",
+        "nome": "I Love Love",
+        "tipo": "Eau de Toilette · Floral Cítrico · ",
+        "genero": "Feminino",
+        "match": "91%",
+        "resumo": "Explosão cítrica e jovem com toranja e laranja. Tem a mesma estrutura olfativa e frescor vibrante do Light Blue.",
+        "tags": ["Cítrico", "Verão", "Dia a dia", "Jovem"],
+        "saida": "Toranja · Laranja · Groselha Preta · Limão",
+        "coracao": "Lírio-do-Vale · Junco · Chá de Rosa · Canela",
+        "fundo": "Almíscar · Cedro · Notas Amadeiradas",
+        "projecao": "Moderada",
+        "fixacao": "Moderada (5h a 6h)",
+        "argumento": "Excelente contrapartida vibrante para quem ama o estilo do Light Blue com ótimo custo-benefício no catálogo Renner."
+    },
+    {
+        "marca": "GIORGIO ARMANI",
+        "nome": "Acqua Di Giò Pour Homme",
+        "tipo": "Eau de Toilette · Aromático Aquático · ",
+        "genero": "Masculino",
+        "match": "89%",
+        "resumo": "Referência mundial em perfumes aquáticos e frescos. Notas marinhas combinadas com bergamota e caqui.",
+        "tags": ["Fresco", "Aquático", "Verão", "Trabalho", "Versátil"],
+        "saida": "Bergamota · Limão · Lima · Jasmim · Laranja",
+        "coracao": "Notas Marinhas · Pêssego · Calone · Ciclame · Alecrim",
+        "fundo": "Almíscar · Cedro · Liquen · Âmbar · Patchouli",
+        "projecao": "Moderada",
+        "fixacao": "Moderada / Alta",
+        "argumento": "Para quem quer o ápice da sensação de banho tomado e frescor marinho. Um clássico atemporal vendido na Renner."
+    },
+    {
+        "marca": "CAROLINA HERRERA",
+        "nome": "Good Girl EDP",
+        "tipo": "Eau de Parfum · Oriental Floral · ",
+        "genero": "Feminino",
+        "match": "95%",
+        "resumo": "Combinação marcante de tuberosa e fava tonka com toques de cacau e café. Doce, envolvente e sensual.",
+        "tags": ["Noite", "Festas", "Inverno", "Marcante", "Doce"],
+        "saida": "Amêndoa · Café · Bergamota · Limão",
+        "coracao": "Tuberosa · Jasmim Sambac · Flor de Laranjeira · Orris",
+        "fundo": "Fava Tonka · Cacau · Baunilha · Pralinê · Sândalo",
+        "projecao": "Alta",
+        "fixacao": "Muito Alta (8h+)",
+        "argumento": "Famoso perfume do salto alto. Perfeito para clientes que querem marcar presença à noite com um rastro doce e sofisticado."
+    },
+    {
+        "marca": "MONTBLANC",
+        "nome": "Legend EDT",
+        "tipo": "Eau de Toilette · Aromático Fougére · ",
+        "genero": "Masculino",
+        "match": "85%",
+        "resumo": "Equilíbrio perfeito entre notas cítricas de saída e um fundo amadeirado macio com fava tonka.",
+        "tags": ["Versátil", "Trabalho", "Dia a dia", "Elegante"],
+        "saida": "Bergamota · Lavanda · Folhas de Abacaxi · Verbena",
+        "coracao": "Maçã Vermelha · Gerânio · Rosa · Maçã",
+        "fundo": "Fava Tonka · Sândalo · Evernyl",
+        "projecao": "Moderada",
+        "fixacao": "Alta (6h a 8h)",
+        "argumento": "Aromático elegante e versátil de facílima aceitação. Uma das melhores escolhas masculinas para presente na Renner."
+    }
+]
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+# --- INTERFACE PRINCIPAL ---
+st.markdown("### 🛍️ Consultor de Perfumaria Renner")
+st.markdown("<p style='font-size: 13px; margin-top: -10px;'>Pesquisa baseada nos dados do <b>Fragrantica</b> filtrados <b>exclusivamente pelo catálogo Renner</b>.</p>", unsafe_allow_html=True)
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 16px;
-            display: flex;
-            justify-content: center;
-        }
+st.markdown('<div class="main-card">', unsafe_allow_html=True)
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-        }
+query_input = st.text_area(
+    "Pesquisa",
+    placeholder="Ex: Light Blue, perfume fresco para verão, floral marcante ou amadeirado...",
+    height=100,
+    label_visibility="collapsed"
+)
 
-        .header {
-            margin-bottom: 20px;
-        }
+st.markdown("<br>", unsafe_allow_html=True)
 
-        .header h1 {
-            font-size: 20px;
-            color: var(--text-main);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+if st.button("🔍 Encontrar fragrâncias"):
+    termo = query_input.strip().lower()
+    
+    if not termo:
+        st.warning("Por favor, digite o nome de um perfume ou estilo desejado.")
+    else:
+        with st.spinner("A consultar fichas do Fragrantica no catálogo Renner..."):
+            resultados = []
+            
+            # Filtra por correspondência no nome, marca, gênero ou tags olfativas
+            for p in CATALOGO_RENNER:
+                if (termo in p["nome"].lower() or 
+                    termo in p["marca"].lower() or 
+                    termo in p["genero"].lower() or 
+                    any(termo in tag.lower() for tag in p["tags"]) or
+                    termo in p["resumo"].lower()):
+                    resultados.append(p)
+            
+            # Se a busca for genérica ou não encontrar o nome exato, devolve as principais opções Renner
+            if len(resultados) < 2:
+                resultados = CATALOGO_RENNER[:4]
 
-        .header p {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            line-height: 1.4;
-        }
+            st.markdown(f"#### 📋 Encontradas {len(resultados)} Opções no Catálogo Renner:")
+            
+            for p in resultados:
+                tags_html = "".join([f'<span class="pill-tag">{t}</span>' for t in p["tags"]])
+                
+                st.markdown(f"""
+                    <div class="perfume-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <span class="section-title">{p["marca"]}</span>
+                                <h2 style="margin: 0; color: #2C2224 !important; font-size: 22px;">{p["nome"]}</h2>
+                                <p style="margin: 2px 0 0 0; font-size: 13px; color: #555555 !important;">
+                                    {p["tipo"]}<b style="color: #4A2E35 !important;">{p["genero"]}</b>
+                                </p>
+                            </div>
+                            <div style="background-color: #4A2E35; color: #FFFFFF !important; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 13px;">
+                                {p["match"]} Match
+                            </div>
+                        </div>
+                        
+                        <div class="section-box" style="margin-top: 12px; background-color: #FDFBF7 !important;">
+                            <p class="section-text">{p["resumo"]}</p>
+                        </div>
+                        
+                        <div style="margin-top: 8px; margin-bottom: 8px;">
+                            {tags_html}
+                        </div>
+                        
+                        <div class="section-box">
+                            <span class="section-title">SAÍDA (FRAGRANTICA)</span>
+                            <p class="section-text">{p["saida"]}</p>
+                        </div>
+                        
+                        <div class="section-box">
+                            <span class="section-title">CORAÇÃO (FRAGRANTICA)</span>
+                            <p class="section-text">{p["coracao"]}</p>
+                        </div>
+                        
+                        <div class="section-box">
+                            <span class="section-title">FUNDO (FRAGRANTICA)</span>
+                            <p class="section-text">{p["fundo"]}</p>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: #444444 !important;">
+                            <div><b style="color: #2C2224 !important;">PROJEÇÃO:</b> {p["projecao"]}</div>
+                            <div><b style="color: #2C2224 !important;">FIXAÇÃO:</b> {p["fixacao"]}</div>
+                        </div>
+                        
+                        <div class="section-box" style="margin-top: 12px; background-color: #FDFBF7 !important;">
+                            <span class="section-title">ARGUMENTO DE VENDA (RENNER)</span>
+                            <p class="section-text">{p["argumento"]}</p>
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
 
-        /* Cartão Principal */
-        .main-card {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            margin-bottom: 20px;
-        }
-
-        /* Seletor de Abas Estilizado */
-        .tabs-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .tab-btn {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 16px;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn.active {
-            background-color: var(--primary-color);
-            color: #FFFFFF;
-            border-color: var(--primary-color);
-        }
-
-        .tab-btn.active .tab-title, 
-        .tab-btn.active .tab-desc {
-            color: #FFFFFF;
-        }
-
-        .tab-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 2px;
-        }
-
-        .tab-desc {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        /* Caixa de Texto */
-        .search-box-container {
-            position: relative;
-            margin-bottom: 16px;
-        }
-
-        textarea {
-            width: 100%;
-            background-color: #FAFAFA;
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 14px;
-            font-size: 14px;
-            color: var(--text-main);
-            resize: none;
-            height: 110px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        textarea:focus {
-            border-color: var(--primary-color);
-            background-color: #FFFFFF;
-        }
-
-        /* Chips / Sugestões rápidas */
-        .chips-container {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding-bottom: 6px;
-            margin-bottom: 16px;
-            scrollbar-width: none;
-        }
-        .chips-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .chip {
-            background-color: var(--tag-bg);
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: var(--primary-color);
-            font-weight: 500;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        /* Botão de Pesquisa */
-        .submit-btn {
-            background-color: var(--primary-color);
-            color: #FFFFFF;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            border-radius: 16px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(74, 46, 53, 0.2);
-            transition: background-color 0.2s;
-        }
-
-        .submit-btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        /* Resultados - Cartão de Perfume */
-        .perfume-card {
-            background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--border-color);
-            margin-top: 20px;
-            display: none;
-        }
-
-        .perfume-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .brand-name {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-        }
-
-        .perfume-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin: 2px 0;
-        }
-
-        .perfume-meta {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .perfume-meta b {
-            color: var(--primary-color);
-        }
-
-        .match-badge {
-            background-color: var(--primary-color);
-            color: #FFFFFF;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        .description-box {
-            background-color: #FDFBF7;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 12px 14px;
-            font-size: 13px;
-            color: #555555;
-            line-height: 1.4;
-            margin-bottom: 14px;
-        }
-
-        .tags-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 14px;
-        }
-
-        .pill-tag {
-            background-color: var(--tag-bg);
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        .note-box {
-            background-color: #FAFAFA;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 10px 14px;
-            margin-bottom: 10px;
-        }
-
-        .note-title {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .note-content {
-            font-size: 13px;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        .metrics-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-main);
-            background-color: #FAFAFA;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 14px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="header">
-            <h1>🛍️ Consultor Renner</h1>
-            <p>Selecione o perfil ou ocasião. Encontramos a ficha técnica exata no catálogo com indicação de género.</p>
-        </div>
-
-        <div class="main-card">
-            <!-- Abas -->
-            <div class="tabs-grid">
-                <button class="tab-btn active" id="tabPreferencias" onclick="switchTab('pref')">
-                    <div class="tab-title">❤️ Preferências</div>
-                    <div class="tab-desc">O que ele já usa e ama</div>
-                </button>
-                <button class="tab-btn" id="tabOcasiao" onclick="switchTab('ocas')">
-                    <div class="tab-title">☀️ Ocasião</div>
-                    <div class="tab-desc">Quando e onde usar</div>
-                </button>
-            </div>
-
-            <!-- Caixa de Texto -->
-            <div class="search-box-container">
-                <textarea id="userInput" placeholder="Ex: O cliente adora o Legend da Montblanc ou procura um amadeirado marcante..."></textarea>
-            </div>
-
-            <!-- Sugestões Rápidas (Chips) -->
-            <div class="chips-container">
-                <button class="chip" onclick="selectChip('Gosta de doces gourmand')">Doces gourmand</button>
-                <button class="chip" onclick="selectChip('Usa florais marcantes')">Florais marcantes</button>
-                <button class="chip" onclick="selectChip('Procura amadeirado noturno')">Amadeirado noturno</button>
-                <button class="chip" onclick="selectChip('Fresco cítrico para o dia')">Fresco cítrico</button>
-            </div>
-
-            <!-- Botão de Ação -->
-            <button class="submit-btn" onclick="searchPerfume()">🔍 Encontrar fragrâncias</button>
-        </div>
-
-        <!-- Cartão de Resultado Exato -->
-        <div class="perfume-card" id="resultCard">
-            <div class="perfume-header">
-                <div>
-                    <span class="brand-name">MONTBLANC</span>
-                    <h2 class="perfume-name">Legend</h2>
-                    <div class="perfume-meta">Eau de Toilette · Aromático Fougére · <b>Masculino</b></div>
-                </div>
-                <div class="match-badge">78% Match</div>
-            </div>
-
-            <div class="description-box">
-                Reúne notas de bergamota e lavanda com um fundo amadeirado, entregando um resultado equilibrado entre o frescor e a sobriedade.
-            </div>
-
-            <div class="tags-row">
-                <span class="pill-tag">Versátil</span>
-                <span class="pill-tag">Trabalho</span>
-                <span class="pill-tag">Dia a dia</span>
-                <span class="pill-tag">Eventos noturnos</span>
-            </div>
-
-            <div class="note-box">
-                <span class="note-title">SAÍDA</span>
-                <div class="note-content">Bergamota · Lavanda · Abacaxi</div>
-            </div>
-
-            <div class="note-box">
-                <span class="note-title">CORAÇÃO</span>
-                <div class="note-content">Gerânio · Maçã · Rosa</div>
-            </div>
-
-            <div class="note-box">
-                <span class="note-title">FUNDO</span>
-                <div class="note-content">Fava tonka · Sândalo · Baunilha</div>
-            </div>
-
-            <div class="metrics-row">
-                <div><b>PROJEÇÃO:</b> Moderada</div>
-                <div><b>FIXAÇÃO:</b> Alta</div>
-            </div>
-
-            <div class="description-box" style="margin-top: 10px; background-color: #FDFBF7;">
-                <span class="note-title">ARGUMENTO DE VENDA</span>
-                <div style="font-size: 13px; color: var(--text-main); margin-top: 2px;">
-                    Bergamota com lavanda e fava tonka: aromático elegante e equilibrado, um dos masculinos de melhor aceitação na Renner.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function switchTab(type) {
-            const btnPref = document.getElementById('tabPreferencias');
-            const btnOcas = document.getElementById('tabOcasiao');
-            const input = document.getElementById('userInput');
-
-            if (type === 'pref') {
-                btnPref.classList.add('active');
-                btnOcas.classList.remove('active');
-                input.placeholder = "Ex: O cliente adora o Legend da Montblanc ou procura um amadeirado marcante...";
-            } else {
-                btnOcas.classList.add('active');
-                btnPref.classList.remove('active');
-                input.placeholder = "Ex: Perfume fresco para o dia a dia no verão ou jantar romântico...";
-            }
-        }
-
-        function selectChip(text) {
-            document.getElementById('userInput').value = text;
-        }
-
-        function searchPerfume() {
-            const inputVal = document.getElementById('userInput').value.trim();
-            if (inputVal === "") {
-                alert("Por favor, escreva uma preferência ou ocasião.");
-                return;
-            }
-            const card = document.getElementById('resultCard');
-            card.style.display = "block";
-            card.scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
-</body>
-</html>
-"""
-
-# Renderiza a aplicação protegida
-components.html(html_code, height=750, scrolling=True)
+st.markdown('</div>', unsafe_allow_html=True)

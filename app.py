@@ -7,12 +7,19 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- ESTILOS VISUAIS NATIVOS E LIMPOS ---
+# --- ESTILOS VISUAIS EXACTOS DA REFERÊNCIA ---
 st.markdown("""
     <style>
     .stApp {
         background-color: #F7F5F2 !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .main-card {
+        background-color: #FFFFFF !important;
+        padding: 24px;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
     }
     .stButton > button {
         background-color: #4A2E35 !important;
@@ -62,7 +69,7 @@ def check_password():
 if not check_password():
     st.stop()
 
-# --- BASE DE DADOS: FRAGRANTICA + CATÁLOGO RENNER ---
+# --- BASE DE DADOS COMPLETA (FRAGRANTICA + CATÁLOGO RENNER) ---
 CATALOGO_RENNER = [
     {
         "letra": "L",
@@ -76,8 +83,10 @@ CATALOGO_RENNER = [
         "saida": "Limão Siciliano · Maçã · Cedro · Campanula",
         "coracao": "Bambu · Jasmim · Rosa Branca",
         "fundo": "Madeira de Citrinos · Âmbar · Almíscar",
-        "proj": "Moderada (███░)",
-        "fix": "Moderada (███░)",
+        "proj_val": "Moderada",
+        "proj_bars": 3,
+        "fix_val": "Moderada",
+        "fix_bars": 3,
         "argumento": "O topo de vendas em frescor na Renner. Saída cítrica radiante com fundo almiscarado de alta aceitação no calor brasileiro."
     },
     {
@@ -88,12 +97,14 @@ CATALOGO_RENNER = [
         "genero": "Masculino",
         "match": "94%",
         "resumo": "Reúne notas de bergamota e lavanda com um fundo amadeirado, entregando um resultado equilibrado entre o frescor e a sobriedade.",
-        "tags": ["Versátil", "Trabalho", "Dia a dia", "Eventos noturnos"],
+        "tags": ["Versátil", "Trabalho", "Dia a dia", "Eventos noturnos", "Dia e noite"],
         "saida": "Bergamota · Lavanda · Abacaxi · Verbena",
         "coracao": "Gerânio · Maçã · Musgo de Carvalho · Rosa",
         "fundo": "Fava Tonka · Sândalo",
-        "proj": "Moderada (███░)",
-        "fix": "Alta (████)",
+        "proj_val": "Moderada",
+        "proj_bars": 3,
+        "fix_val": "Alta",
+        "fix_bars": 4,
         "argumento": "Bergamota com lavanda e fava tonka: aromático elegante e equilibrado, um dos masculinos de melhor aceitação na Renner."
     },
     {
@@ -108,8 +119,10 @@ CATALOGO_RENNER = [
         "saida": "Amêndoa · Café · Bergamota · Limão",
         "coracao": "Tuberosa · Jasmim Sambac · Flor de Laranjeira",
         "fundo": "Fava Tonka · Cacau · Baunilha · Pralinê · Sândalo",
-        "proj": "Alta (████)",
-        "fix": "Muito Alta (████)",
+        "proj_val": "Alta",
+        "proj_bars": 4,
+        "fix_val": "Muito Alta",
+        "fix_bars": 4,
         "argumento": "O famoso perfume do salto alto. Doce sofisticado e envolvente, perfeito para impulsionar vendas no segmento noturno da Renner."
     },
     {
@@ -124,13 +137,17 @@ CATALOGO_RENNER = [
         "saida": "Pimenta de Sichuan · Bergamota da Calábria",
         "coracao": "Gerânio · Lavanda · Pimenta Rosa · Vetiver",
         "fundo": "Ambroxan · Cedro · Ládano",
-        "proj": "Forte (████)",
-        "fix": "Alta (████)",
+        "proj_val": "Forte",
+        "proj_bars": 4,
+        "fix_val": "Alta",
+        "fix_bars": 4,
         "argumento": "Um fenômeno mundial de elogios. Extremamente magnético, ideal para clientes que buscam alta performance e projeção marcante."
     }
 ]
 
 # --- INTERFACE PRINCIPAL ---
+st.markdown('<div class="main-card">', unsafe_allow_html=True)
+
 st.markdown("### 🛍️ Consultor de Perfumaria Renner")
 st.markdown("<p style='font-size: 13px; color: #666666; margin-top: -5px;'>Informações técnicas oficiais do <b>Fragrantica</b> aplicadas ao stock Renner.</p>", unsafe_allow_html=True)
 
@@ -165,46 +182,72 @@ if st.button("🔍 Encontrar fragrâncias"):
             st.markdown(f"#### 📋 Encontradas {len(resultados)} Fichas Técnicas:")
             
             for p in resultados:
-                # Usamos containers limpos do Streamlit para evitar que o código HTML apareça como texto
-                with st.container():
-                    st.markdown(f"""
-                    <div style="background-color: #FFFFFF; padding: 20px; border-radius: 20px; border: 1px solid #EAE5E0; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                            <div style="display: flex; gap: 12px; align-items: center;">
-                                <div style="width: 42px; height: 42px; background: #F7F5F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; border: 1px solid #EAE5E0;">{p["letra"]}</div>
-                                <div>
-                                    <span style="font-size: 10px; font-weight: 800; color: #888888; letter-spacing: 1px;">{p["marca"]}</span>
-                                    <h3 style="margin: 0; color: #2C2224; font-size: 20px;">{p["nome"]}</h3>
-                                    <p style="margin: 0; font-size: 12px; color: #666666;">{p["tipo"]} · <b style="color: #4A2E35;">{p["genero"]}</b></p>
-                                </div>
+                tags_html = "".join([f'<span style="background-color: #F7F5F2; padding: 6px 14px; border-radius: 20px; font-size: 12px; color: #4A2E35; font-weight: 600; display: inline-block; margin: 3px; border: 1px solid #EAE5E0;">{t}</span>' for t in p["tags"]])
+                
+                proj_bars = "".join([f'<div style="flex:1; height:6px; border-radius:3px; background-color:{"#4A2E35" if i < p["proj_bars"] else "#E2DBD4"};"></div>' for i in range(4)])
+                fix_bars = "".join([f'<div style="flex:1; height:6px; border-radius:3px; background-color:{"#4A2E35" if i < p["fix_bars"] else "#E2DBD4"};"></div>' for i in range(4)])
+
+                # Construção limpa em bloco HTML contínuo (renderiza sem virar código de texto na tela)
+                card_html = f"""
+                <div style="background-color: #FFFFFF; padding: 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); border: 1px solid #EAE5E0; margin-top: 20px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: flex-start;">
+                            <div style="width: 48px; height: 48px; background-color: #F7F5F2; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #2C2224; margin-right: 14px; flex-shrink: 0; border: 1px solid #EAE5E0;">{p["letra"]}</div>
+                            <div>
+                                <span style="font-size: 10px; font-weight: 800; color: #888888; letter-spacing: 1.2px; display: block;">{p["marca"]}</span>
+                                <h2 style="margin: 0; color: #2C2224; font-size: 22px; font-weight: 700;">{p["nome"]}</h2>
+                                <p style="margin: 2px 0 0 0; font-size: 12px; color: #666666;">{p["tipo"]} · <b style="color: #4A2E35;">{p["genero"]}</b></p>
                             </div>
-                            <div style="background: #4A2E35; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold;">
-                                {p["match"]}
+                        </div>
+                        <div style="background-color: #4A2E35; color: #FFFFFF; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px;">{p["match"]}</div>
+                    </div>
+                    
+                    <div style="background-color: #FDFBF7; border: 1px solid #EAE5E0; border-radius: 16px; padding: 14px 16px; margin-top: 12px; margin-bottom: 12px; font-size: 13px; color: #2C2224;">
+                        {p["resumo"]}
+                    </div>
+                    
+                    <div style="margin-top: 10px; margin-bottom: 10px;">
+                        {tags_html}
+                    </div>
+                    
+                    <div style="background-color: #FAFAFA; border: 1px solid #EAE5E0; border-radius: 16px; padding: 12px 16px; margin-top: 10px; margin-bottom: 10px;">
+                        <span style="font-size: 10px; font-weight: 800; color: #888888; letter-spacing: 1.2px; display: block; margin-bottom: 4px;">SAÍDA (FRAGRANTICA)</span>
+                        <p style="margin:0; font-size:13px; color:#2C2224; font-weight:500;">{p["saida"]}</p>
+                    </div>
+                    
+                    <div style="background-color: #FAFAFA; border: 1px solid #EAE5E0; border-radius: 16px; padding: 12px 16px; margin-top: 10px; margin-bottom: 10px;">
+                        <span style="font-size: 10px; font-weight: 800; color: #888888; letter-spacing: 1.2px; display: block; margin-bottom: 4px;">CORAÇÃO (FRAGRANTICA)</span>
+                        <p style="margin:0; font-size:13px; color:#2C2224; font-weight:500;">{p["coracao"]}</p>
+                    </div>
+                    
+                    <div style="background-color: #FAFAFA; border: 1px solid #EAE5E0; border-radius: 16px; padding: 12px 16px; margin-top: 10px; margin-bottom: 10px;">
+                        <span style="font-size: 10px; font-weight: 800; color: #888888; letter-spacing: 1.2px; display: block; margin-bottom: 4px;">FUNDO (FRAGRANTICA)</span>
+                        <p style="margin:0; font-size:13px; color:#2C2224; font-weight:500;">{p["fundo"]}</p>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-top: 16px; margin-bottom: 16px; background-color: #FAFAFA; padding: 12px 16px; border-radius: 16px; border: 1px solid #EAE5E0;">
+                        <div style="width: 48%;">
+                            <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#777; margin-bottom:6px;">
+                                <span>PROJEÇÃO</span><span>{p["proj_val"]}</span>
                             </div>
+                            <div style="display:flex; gap:4px;">{proj_bars}</div>
                         </div>
-                        
-                        <div style="background: #FDFBF7; padding: 10px 14px; border-radius: 12px; margin-top: 12px; font-size: 13px; color: #444;">
-                            {p["resumo"]}
-                        </div>
-                        
-                        <div style="margin-top: 10px;">
-                            <b>SAÍDA (Fragrantica):</b> <span style="font-size: 13px; color: #333;">{p["saida"]}</span>
-                        </div>
-                        <div style="margin-top: 4px;">
-                            <b>CORAÇÃO (Fragrantica):</b> <span style="font-size: 13px; color: #333;">{p["coracao"]}</span>
-                        </div>
-                        <div style="margin-top: 4px;">
-                            <b>FUNDO (Fragrantica):</b> <span style="font-size: 13px; color: #333;">{p["fundo"]}</span>
-                        </div>
-                        
-                        <div style="display: flex; justify-content: space-between; margin-top: 12px; background: #FAFAFA; padding: 8px 12px; border-radius: 10px; font-size: 12px;">
-                            <div><b>PROJEÇÃO:</b> {p["proj"]}</div>
-                            <div><b>FIXAÇÃO:</b> {p["fix"]}</div>
-                        </div>
-                        
-                        <div style="background: #FDFBF7; padding: 10px 14px; border-radius: 12px; margin-top: 10px; font-size: 13px;">
-                            <b style="color: #888888; font-size: 10px; letter-spacing: 1px; display: block; margin-bottom: 2px;">ARGUMENTO DE VENDA (RENNER)</b>
-                            {p["argumento"]}
+                        <div style="width: 48%;">
+                            <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#777; margin-bottom:6px;">
+                                <span>FIXAÇÃO</span><span>{p["fix_val"]}</span>
+                            </div>
+                            <div style="display:flex; gap:4px;">{fix_bars}</div>
                         </div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    
+                    <div style="background-color: #FDFBF7; border: 1px solid #EAE5E0; border-radius: 16px; padding: 14px 16px; margin-top: 12px;">
+                        <span style="font-size: 10px; font-weight: 800; color: #888888; letter-spacing: 1.2px; display: block; margin-bottom: 4px;">ARGUMENTO DE VENDA (RENNER)</span>
+                        <p style="margin:0; font-size:13px; color:#2C2224; font-weight:500;">{p["argumento"]}</p>
+                    </div>
+                </div>
+                """
+                
+                # Renderiza o HTML puro sem quebrar a estrutura do Streamlit
+                st.html(card_html)
+
+st.markdown('</div>', unsafe_allow_html=True)

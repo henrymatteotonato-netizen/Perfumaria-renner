@@ -1,16 +1,3 @@
-import streamlit as st
-import streamlit.components.v1 as components
-
-# Configuração da Página
-st.set_page_config(
-    page_title="Consultor de Perfumaria Renner",
-    page_icon="🛍️",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-
-# --- SEGURANÇA: SENHA DE ACESSO EXCLUSIVO ---
-SENHA_MESTRE = "renner123"
 
 def check_password():
     def password_entered():

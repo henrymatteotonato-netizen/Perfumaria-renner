@@ -7,7 +7,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- ESTILOS VISUAIS PARA O LAYOUT MODERNO ---
+# --- ESTILOS VISUAIS PARA O LAYOUT MODERNO PERFEITO ---
 st.markdown("""
     <style>
     .stApp {
@@ -110,7 +110,7 @@ def check_password():
 if not check_password():
     st.stop()
 
-# --- BASE DE DADOS (FRAGRANTICA + CATÁLOGO RENNER) ---
+# --- BASE DE DADOS: DADOS DO FRAGRANTICA FILTRADOS PARA O CATÁLOGO RENNER ---
 CATALOGO_RENNER = [
     {
         "marca": "DOLCE & GABBANA",
@@ -189,11 +189,11 @@ CATALOGO_RENNER = [
     }
 ]
 
-# --- LAYOUT PRINCIPAL EM CARTÃO LIMPO ---
+# --- ESTRUTURA VISUAL CORRETA (DENTRO DO CARTÃO PRINCIPAL) ---
 st.markdown('<div class="main-card">', unsafe_allow_html=True)
 
 st.markdown("### 🛍️ Consultor de Perfumaria Renner")
-st.markdown("<p style='font-size: 13px; color: #666666;'>Dados do <b>Fragrantica</b> filtrados exclusivamente para o catálogo Renner.</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 13px; color: #666666; margin-top: -5px;'>Dados do <b>Fragrantica</b> filtrados exclusivamente para o catálogo Renner.</p>", unsafe_allow_html=True)
 
 query_input = st.text_area(
     "Explorer",
